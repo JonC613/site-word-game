@@ -20,10 +20,15 @@ const containerStyles: IStackStyles = {
   root: {
     background: 'linear-gradient(135deg, #FFE5F1 0%, #B8E8FF 50%, #C9FFE5 100%)',
     height: '100vh',
-    padding: 20,
+    width: '100vw',
+    margin: 0,
+    padding: 0,
     display: 'flex',
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    position: 'fixed',
+    top: 0,
+    left: 0
   }
 };
 
@@ -33,14 +38,16 @@ const gameContainerStyles: IStackStyles = {
     padding: '40px',
     borderRadius: '30px',
     boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
-    maxWidth: '1200px', // Increased from 800px
-    width: '95%', // Increased from 90%
-    minHeight: '80vh', // Added to make container taller
+    maxWidth: '1200px',
+    width: '90vw',
+    minHeight: '80vh',
+    height: '800px', // Add fixed height
     position: 'relative',
-    display: 'flex', // Added to help with centering
-    flexDirection: 'column', // Added to stack children vertically
-    justifyContent: 'space-between', // Added to spread content
-    alignItems: 'center', // Added to center horizontally
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'flex-start', // Change from space-between to flex-start
+    alignItems: 'center',
+    gap: '2rem', // Increase gap for better spacing
     '::before': {
       content: '""',
       position: 'absolute',
@@ -52,6 +59,17 @@ const gameContainerStyles: IStackStyles = {
       borderRadius: '30px',
       zIndex: -1
     }
+  }
+};
+
+// Add a new style for the message container
+const messageContainerStyles: IStackStyles = {
+  root: {
+    minHeight: '80px', // Fixed height for message area
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%'
   }
 };
 
@@ -86,6 +104,22 @@ const wordStyles: ITextStyles = {
   }
 };
 
+// Update messageStyles for inline display
+const messageStyles: ITextStyles = {
+  root: {
+    padding: '20px',
+    backgroundColor: '#e8f5e9',
+    borderRadius: '10px',
+    color: '#2e7d32',
+    fontWeight: 600,
+    fontSize: '24px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+    margin: '1rem 0'
+  }
+};
 
 const getRandomWord = (usedWords: string[], currentWord: string): string => {
   const availableWords = words.filter(word => !usedWords.includes(word) && word !== currentWord);
@@ -153,10 +187,12 @@ const App: React.FC = () => {
   const [messageTimeout, setMessageTimeout] = useState<number>(2000);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setMessage('');
-    }, messageTimeout);
-    return () => clearTimeout(timer);
+    if (message) {
+      const timer = setTimeout(() => {
+        setMessage('');
+      }, messageTimeout);
+      return () => clearTimeout(timer);
+    }
   }, [message, messageTimeout]);
 
   const handleCorrect = (): void => {
@@ -230,22 +266,16 @@ const App: React.FC = () => {
           {currentWord}
         </Text>
 
-        {message && (
-          <Text 
-            variant="medium" 
-            styles={{ 
-              root: { 
-                padding: '10px 20px',
-                backgroundColor: '#e8f5e9',
-                borderRadius: '10px',
-                color: '#2e7d32',
-                fontWeight: 600
-              } 
-            }}
-          >
-            {message}
-          </Text>
-        )}
+        <Stack styles={messageContainerStyles}>
+          {message && (
+            <Text 
+              variant="medium" 
+              styles={messageStyles}
+            >
+              {message}
+            </Text>
+          )}
+        </Stack>
 
         <Stack horizontal tokens={{ childrenGap: 20 }}>
           <PrimaryButton 
