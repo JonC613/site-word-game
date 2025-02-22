@@ -199,36 +199,44 @@ const App: React.FC = () => {
     const newScore = score + 1;
     setScore(newScore);
     setHighScore(Math.max(highScore, newScore));
-    
+  
     // Play current word before changing it
     playWordAudio(currentWord);
-    
+  
     const newUsedWords = [...usedWords, currentWord];
     if (newUsedWords.length >= words.length) {
       setMessage('Congratulations! You completed all words! Starting new round.');
       setMessageTimeout(3000);
       setUsedWords([]);
-      setCurrentWord(getRandomWord([], currentWord));
+      setTimeout(() => {
+        setCurrentWord(getRandomWord([], currentWord));
+      }, 1500); // 1.5-second delay before showing the next word
     } else {
       setMessage('Great job! +1 point');
       setMessageTimeout(2000);
       setUsedWords(newUsedWords);
-      setCurrentWord(getRandomWord(newUsedWords, currentWord));
+      setTimeout(() => {
+        setCurrentWord(getRandomWord(newUsedWords, currentWord));
+      }, 1500); // 1.5-second delay before showing the next word
     }
   };
-
+  
   const handleIncorrect = (): void => {
     const newScore = Math.max(0, score - 1);
     setScore(newScore);
     setMessage('Keep trying! -1 point');
     playWordAudio(currentWord);
+    setTimeout(() => {
+      setCurrentWord(getRandomWord(usedWords, currentWord));
+    }, 1500); // 1.5-second delay before showing the next word
   };
   
   const handleRepeat = (): void => {
     setMessage(`Let's say it again: ${currentWord}`);
     playWordAudio(currentWord);
+    // No need to change the word here
   };
-
+  
   return (
     <Stack 
       horizontalAlign="center" 
@@ -250,7 +258,7 @@ const App: React.FC = () => {
         >
           Sight Word Learning Game
         </Text>
-
+  
         <Stack styles={scoreStyles}>
           <Text 
             variant="large" 
@@ -265,11 +273,11 @@ const App: React.FC = () => {
             High Score: {highScore}
           </Text>
         </Stack>
-
+  
         <Text variant="xxLarge" styles={wordStyles}>
           {currentWord}
         </Text>
-
+  
         <Stack styles={messageContainerStyles}>
           {message && (
             <Text 
@@ -280,7 +288,7 @@ const App: React.FC = () => {
             </Text>
           )}
         </Stack>
-
+  
         <Stack horizontal tokens={{ childrenGap: 20 }}>
           <PrimaryButton 
             text="Correct! 😊" 
