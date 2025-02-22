@@ -1,6 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { PrimaryButton, DefaultButton, Stack, Text, IStackStyles, ITextStyles, IButtonStyles } from '@fluentui/react';
 import siteWordsData from './data/sight_words.json';
+
+// Create audio player function
+const playWordAudio = (word: string) => {
+  try {
+    const audio = new Audio(`/mp3/${word.toLowerCase()}.mp3`);
+    audio.play();
+  } catch (error) {
+    console.error('Error playing audio:', error);
+  }
+};
 
 // Get words from the JSON file
 const words: string[] = siteWordsData.sight_words;
@@ -190,6 +200,9 @@ const App: React.FC = () => {
     setScore(newScore);
     setHighScore(Math.max(highScore, newScore));
     
+    // Play current word before changing it
+    playWordAudio(currentWord);
+    
     const newUsedWords = [...usedWords, currentWord];
     if (newUsedWords.length >= words.length) {
       setMessage('Congratulations! You completed all words! Starting new round.');
@@ -208,11 +221,12 @@ const App: React.FC = () => {
     const newScore = Math.max(0, score - 1);
     setScore(newScore);
     setMessage('Keep trying! -1 point');
+    playWordAudio(currentWord);
   };
-
+  
   const handleRepeat = (): void => {
-    // In a future update, you might integrate audio playback here.
     setMessage(`Let's say it again: ${currentWord}`);
+    playWordAudio(currentWord);
   };
 
   return (
