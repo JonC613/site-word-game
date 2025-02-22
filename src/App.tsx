@@ -1,19 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { PrimaryButton, DefaultButton, Stack, Text, IStackStyles, ITextStyles, IButtonStyles } from '@fluentui/react';
+import siteWordsData from './data/sight_words.json';
 
-// A sample list of sight words
-const words: string[] = [
-  'the',
-  'and',
-  'a',
-  'to',
-  'in',
-  'is',
-  'you',
-  'that',
-  'it',
-  'of'
-];
+// Get words from the JSON file
+const words: string[] = siteWordsData.sight_words;
 
 // Add colorful styles
 const containerStyles: IStackStyles = {
