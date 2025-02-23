@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { PrimaryButton, DefaultButton, Stack, Text, IStackStyles, ITextStyles, IButtonStyles } from '@fluentui/react';
 import siteWordsData from './data/sight_words.json';
 import StatsPage from './StatsPage';
+import { COLORS } from './styles/colors';
 
 // Create audio player function
 const playWordAudio = (word: string) => {
@@ -19,7 +20,7 @@ const words: string[] = siteWordsData.sight_words;
 // Add colorful styles
 const containerStyles: IStackStyles = {
   root: {
-    background: 'linear-gradient(135deg, #FFE5F1 0%, #B8E8FF 50%, #C9FFE5 100%)',
+    background: COLORS.background.main,
     height: '100vh',
     width: '100vw',
     margin: 0,
@@ -29,7 +30,9 @@ const containerStyles: IStackStyles = {
     alignItems: 'center',
     position: 'fixed',
     top: 0,
-    left: 0
+    left: 0,
+    fontFamily: 'Segoe UI, system-ui, sans-serif',
+    overflow: 'hidden'
   }
 };
 
@@ -63,6 +66,58 @@ const gameContainerStyles: IStackStyles = {
   }
 };
 
+const headerStyles: IStackStyles = {
+  root: {
+    backgroundColor: COLORS.secondary,
+    padding: '25px 50px',
+    borderRadius: '30px',
+    boxShadow: '0 8px 0 #F57C00',
+    border: '4px solid #F57C00',
+    transform: 'rotate(-2deg)',
+    margin: '20px 0 40px 0',
+    width: 'auto',
+    minWidth: '70%',
+    animation: 'float 3s ease-in-out infinite',
+    transition: 'transform 0.3s ease'
+  }
+};
+
+const headerTextStyles: ITextStyles = {
+  root: {
+    fontSize: '48px',
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+    textAlign: 'center',
+    textShadow: '3px 3px 0 #F57C00',
+    letterSpacing: '1px',
+    transform: 'rotate(2deg)',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '15px',
+    justifyContent: 'center'
+  }
+};
+
+const wordContainerStyles: IStackStyles = {
+  root: {
+    margin: '40px 0',
+    padding: '40px',
+    backgroundColor: COLORS.background.container,
+    borderRadius: '30px',
+    boxShadow: '0 15px 30px rgba(0, 0, 0, 0.1)',
+    width: '100%',
+    maxWidth: '800px',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: '30px',
+    transition: 'transform 0.3s ease',
+    ':hover': {
+      transform: 'translateY(-5px)'
+    }
+  }
+};
+
 // Add a new style for the message container
 const messageContainerStyles: IStackStyles = {
   root: {
@@ -86,21 +141,24 @@ const scoreStyles: IStackStyles = {
 
 const wordStyles: ITextStyles = {
   root: {
-    margin: '40px 0', // Increased vertical margin
-    padding: '30px 60px', // Increased padding
-    backgroundColor: '#ffffff',
+    fontSize: '80px',
+    fontWeight: 'bold',
+    color: COLORS.text.accent,
+    textAlign: 'center',
+    padding: '30px 60px',
+    backgroundColor: COLORS.neutral,
     borderRadius: '20px',
-    boxShadow: '0 6px 0 #4db6ac',
-    border: '4px solid #4db6ac',
-    color: '#00796b',
+    boxShadow: '0 8px 0 rgba(0, 121, 107, 0.2)',
     cursor: 'pointer',
-    transition: 'transform 0.1s',
-    fontSize: '64px', // Added larger font size
-    fontWeight: 'bold', // Added bold weight
-    textAlign: 'center', // Added center alignment
-    minWidth: '300px', // Added minimum width
+    transition: 'all 0.3s ease',
+    userSelect: 'none',
     ':hover': {
-      transform: 'scale(1.05)'
+      transform: 'scale(1.05)',
+      boxShadow: '0 12px 0 rgba(0, 121, 107, 0.2)'
+    },
+    ':active': {
+      transform: 'scale(0.98)',
+      boxShadow: '0 4px 0 rgba(0, 121, 107, 0.2)'
     }
   }
 };
@@ -108,17 +166,16 @@ const wordStyles: ITextStyles = {
 // Update messageStyles for inline display
 const messageStyles: ITextStyles = {
   root: {
-    padding: '20px',
-    backgroundColor: '#e8f5e9',
-    borderRadius: '10px',
-    color: '#2e7d32',
-    fontWeight: 600,
+    padding: '20px 40px',
+    backgroundColor: COLORS.feedback.success,
+    color: '#FFFFFF',
+    borderRadius: '15px',
     fontSize: '24px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '100%',
-    margin: '1rem 0'
+    fontWeight: '600',
+    textAlign: 'center',
+    opacity: 0,
+    transform: 'translateY(20px)',
+    animation: 'slideUp 0.3s ease forwards'
   }
 };
 
