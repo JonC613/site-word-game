@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { PrimaryButton, DefaultButton, Stack, Text, IStackStyles, ITextStyles, IButtonStyles } from '@fluentui/react';
 import siteWordsData from './data/sight_words.json';
+import StatsPage from './StatsPage';
 
 // Create audio player function
 const playWordAudio = (word: string) => {
@@ -200,6 +201,9 @@ const App: React.FC = () => {
   const [username, setUsername] = useState<string>('');
   const [inputUsername, setInputUsername] = useState<string>(''); // New state for input value
   const [usernames, setUsernames] = useState<string[]>([]); // State to store all usernames
+  const [showStats, setShowStats] = useState<boolean>(false);
+  const [correctWords, setCorrectWords] = useState<number>(0);
+  const [incorrectWords, setIncorrectWords] = useState<number>(0);
 
   // Load usernames from localStorage when the component mounts
   useEffect(() => {
@@ -221,6 +225,11 @@ const App: React.FC = () => {
       if (savedHighScore) setHighScore(Number(savedHighScore));
       if (savedUsedWords) setUsedWords(JSON.parse(savedUsedWords));
       if (savedCurrentWord) setCurrentWord(savedCurrentWord);
+      const savedCorrectWords = localStorage.getItem(`${username}_correctWords`);
+      const savedIncorrectWords = localStorage.getItem(`${username}_incorrectWords`);
+      
+      if (savedCorrectWords) setCorrectWords(Number(savedCorrectWords));
+      if (savedIncorrectWords) setIncorrectWords(Number(savedIncorrectWords));
     }
   }, [username]);
 
@@ -231,8 +240,10 @@ const App: React.FC = () => {
       localStorage.setItem(`${username}_highScore`, highScore.toString());
       localStorage.setItem(`${username}_usedWords`, JSON.stringify(usedWords));
       localStorage.setItem(`${username}_currentWord`, currentWord);
+      localStorage.setItem(`${username}_correctWords`, correctWords.toString());
+      localStorage.setItem(`${username}_incorrectWords`, incorrectWords.toString());
     }
-  }, [score, highScore, usedWords, currentWord, username]);
+  }, [score, highScore, usedWords, currentWord, username, correctWords, incorrectWords]);
 
   useEffect(() => {
     if (message) {
@@ -247,6 +258,7 @@ const App: React.FC = () => {
     const newScore = score + 1;
     setScore(newScore);
     setHighScore(Math.max(highScore, newScore));
+    setCorrectWords(prev => prev + 1);
   
     // Play current word before changing it
     playWordAudio(currentWord);
@@ -273,6 +285,7 @@ const App: React.FC = () => {
     const newScore = Math.max(0, score - 1);
     setScore(newScore);
     setMessage('Keep trying! -1 point');
+    setIncorrectWords(prev => prev + 1);
     playWordAudio(currentWord);
     setTimeout(() => {
       setCurrentWord(getRandomWord(usedWords, currentWord));
@@ -317,6 +330,10 @@ const App: React.FC = () => {
     setUsername('');
     setInputUsername('');
   };
+
+  const handleToggleStats = () => {
+    setShowStats(prev => !prev);
+  };
   
   return (
     <Stack 
@@ -352,6 +369,13 @@ const App: React.FC = () => {
             </Stack>
           )}
         </Stack>
+      ) : showStats ? (
+        <StatsPage
+          username={username}
+          correctWords={correctWords}
+          incorrectWords={incorrectWords}
+          onBack={handleToggleStats}
+        />
       ) : (
         <Stack styles={gameContainerStyles}>
           <Stack styles={userInfoStyles}>
@@ -367,6 +391,23 @@ const App: React.FC = () => {
               Welcome, {username}!
             </Text>
             <Stack horizontal tokens={{ childrenGap: 10 }}>
+              <DefaultButton 
+                text="Stats 📊"
+                onClick={handleToggleStats}
+                styles={{
+                  root: {
+                    fontSize: '14px',
+                    padding: '8px 16px',
+                    backgroundColor: '#e8f5e9',
+                    border: '2px solid #4caf50',
+                    color: '#2e7d32'
+                  },
+                  rootHovered: {
+                    backgroundColor: '#4caf50',
+                    color: '#ffffff'
+                  }
+                }}
+              />
               <DefaultButton 
                 text="Logout" 
                 onClick={handleLogout}
