@@ -185,6 +185,42 @@ const App: React.FC = () => {
   const [highScore, setHighScore] = useState<number>(0);
   const [usedWords, setUsedWords] = useState<string[]>([]);
   const [messageTimeout, setMessageTimeout] = useState<number>(2000);
+  const [username, setUsername] = useState<string>('');
+  const [inputUsername, setInputUsername] = useState<string>(''); // New state for input value
+  const [usernames, setUsernames] = useState<string[]>([]); // State to store all usernames
+
+  // Load usernames from localStorage when the component mounts
+  useEffect(() => {
+    const savedUsernames = localStorage.getItem('usernames');
+    if (savedUsernames) {
+      setUsernames(JSON.parse(savedUsernames));
+    }
+  }, []);
+
+  // Load progress from localStorage when the component mounts
+  useEffect(() => {
+    if (username) {
+      const savedScore = localStorage.getItem(`${username}_score`);
+      const savedHighScore = localStorage.getItem(`${username}_highScore`);
+      const savedUsedWords = localStorage.getItem(`${username}_usedWords`);
+      const savedCurrentWord = localStorage.getItem(`${username}_currentWord`);
+
+      if (savedScore) setScore(Number(savedScore));
+      if (savedHighScore) setHighScore(Number(savedHighScore));
+      if (savedUsedWords) setUsedWords(JSON.parse(savedUsedWords));
+      if (savedCurrentWord) setCurrentWord(savedCurrentWord);
+    }
+  }, [username]);
+
+  // Save progress to localStorage whenever score, high score, or used words change
+  useEffect(() => {
+    if (username) {
+      localStorage.setItem(`${username}_score`, score.toString());
+      localStorage.setItem(`${username}_highScore`, highScore.toString());
+      localStorage.setItem(`${username}_usedWords`, JSON.stringify(usedWords));
+      localStorage.setItem(`${username}_currentWord`, currentWord);
+    }
+  }, [score, highScore, usedWords, currentWord, username]);
 
   useEffect(() => {
     if (message) {
@@ -236,6 +272,19 @@ const App: React.FC = () => {
     playWordAudio(currentWord);
     // No need to change the word here
   };
+
+  const handleLogin = () => {
+    if (inputUsername && !usernames.includes(inputUsername)) {
+      const newUsernames = [...usernames, inputUsername];
+      setUsernames(newUsernames);
+      localStorage.setItem('usernames', JSON.stringify(newUsernames));
+    }
+    setUsername(inputUsername);
+  };
+
+  const handleUsernameClick = (username: string) => {
+    setUsername(username);
+  };
   
   return (
     <Stack 
@@ -244,69 +293,98 @@ const App: React.FC = () => {
       styles={containerStyles}
       tokens={{ childrenGap: 25 }}
     >
-      <Stack styles={gameContainerStyles}>
-        <Text 
-          variant="xLarge" 
-          styles={{ 
-            root: { 
-              fontSize: '32px', 
-              fontWeight: 'bold',
-              color: '#006064',
-              textShadow: '2px 2px 0 #ffffff'
-            } 
-          }}
-        >
-          Sight Word Learning Game
-        </Text>
-  
-        <Stack styles={scoreStyles}>
-          <Text 
-            variant="large" 
-            styles={{ root: { fontSize: '24px', color: '#00838f' }}}
-          >
-            Score: {score}
-          </Text>
-          <Text 
-            variant="medium"
-            styles={{ root: { fontSize: '18px', color: '#0097a7' }}}
-          >
-            High Score: {highScore}
-          </Text>
-        </Stack>
-  
-        <Text variant="xxLarge" styles={wordStyles}>
-          {currentWord}
-        </Text>
-  
-        <Stack styles={messageContainerStyles}>
-          {message && (
-            <Text 
-              variant="medium" 
-              styles={messageStyles}
-            >
-              {message}
-            </Text>
+      {!username ? (
+        <Stack>
+          <Text variant="xLarge">Enter your username to start:</Text>
+          <input 
+            type="text" 
+            value={inputUsername} 
+            onChange={(e) => setInputUsername(e.target.value)} 
+          />
+          <PrimaryButton 
+            text="Login" 
+            onClick={handleLogin} 
+            styles={buttonConfigs.correct} 
+          />
+          {usernames.length > 0 && (
+            <Stack tokens={{ childrenGap: 10 }}>
+              <Text variant="large">Or select a previous username:</Text>
+              {usernames.map((name) => (
+                <DefaultButton 
+                  key={name} 
+                  text={name} 
+                  onClick={() => handleUsernameClick(name)} 
+                  styles={buttonConfigs.repeat} 
+                />
+              ))}
+            </Stack>
           )}
         </Stack>
-  
-        <Stack horizontal tokens={{ childrenGap: 20 }}>
-          <PrimaryButton 
-            text="Correct! 😊" 
-            onClick={handleCorrect}
-            styles={buttonConfigs.correct}
-          />
-          <DefaultButton 
-            text="Try Again 🤔" 
-            onClick={handleIncorrect}
-            styles={buttonConfigs.tryAgain}
-          />
-          <DefaultButton 
-            text="Repeat 🔄" 
-            onClick={handleRepeat}
-            styles={buttonConfigs.repeat}
-          />
+      ) : (
+        <Stack styles={gameContainerStyles}>
+          <Text 
+            variant="xLarge" 
+            styles={{ 
+              root: { 
+                fontSize: '32px', 
+                fontWeight: 'bold',
+                color: '#006064',
+                textShadow: '2px 2px 0 #ffffff'
+              } 
+            }}
+          >
+            Sight Word Learning Game
+          </Text>
+    
+          <Stack styles={scoreStyles}>
+            <Text 
+              variant="large" 
+              styles={{ root: { fontSize: '24px', color: '#00838f' }}}
+            >
+              Score: {score}
+            </Text>
+            <Text 
+              variant="medium"
+              styles={{ root: { fontSize: '18px', color: '#0097a7' }}}
+            >
+              High Score: {highScore}
+            </Text>
+          </Stack>
+    
+          <Text variant="xxLarge" styles={wordStyles}>
+            {currentWord}
+          </Text>
+    
+          <Stack styles={messageContainerStyles}>
+            {message && (
+              <Text 
+                variant="medium" 
+                styles={messageStyles}
+              >
+                {message}
+              </Text>
+            )}
+          </Stack>
+    
+          <Stack horizontal tokens={{ childrenGap: 20 }}>
+            <PrimaryButton 
+              text="Correct! 😊" 
+              onClick={handleCorrect}
+              styles={buttonConfigs.correct}
+            />
+            <DefaultButton 
+              text="Try Again 🤔" 
+              onClick={handleIncorrect}
+              styles={buttonConfigs.tryAgain}
+            />
+            <DefaultButton 
+              text="Repeat 🔄" 
+              onClick={handleRepeat}
+              styles={buttonConfigs.repeat}
+            />
+          </Stack>
         </Stack>
-      </Stack>
+      )}
     </Stack>
   );
 };
