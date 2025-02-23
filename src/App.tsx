@@ -178,6 +178,18 @@ const buttonConfigs = {
   })
 };
 
+const userInfoStyles: IStackStyles = {
+  root: {
+    position: 'absolute',
+    top: '20px',
+    right: '20px',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-end',
+    gap: '10px'
+  }
+};
+
 const App: React.FC = () => {
   const [currentWord, setCurrentWord] = useState<string>(getRandomWord([], ''));
   const [message, setMessage] = useState<string>('');
@@ -285,6 +297,26 @@ const App: React.FC = () => {
   const handleUsernameClick = (username: string) => {
     setUsername(username);
   };
+
+  const handleResetProgress = () => {
+    setScore(0);
+    setHighScore(0);
+    setUsedWords([]);
+    setCurrentWord(getRandomWord([], ''));
+    
+    // Clear localStorage for this user
+    localStorage.removeItem(`${username}_score`);
+    localStorage.removeItem(`${username}_highScore`);
+    localStorage.removeItem(`${username}_usedWords`);
+    localStorage.removeItem(`${username}_currentWord`);
+    
+    setMessage('Progress reset successfully!');
+  };
+
+  const handleLogout = () => {
+    setUsername('');
+    setInputUsername('');
+  };
   
   return (
     <Stack 
@@ -322,6 +354,55 @@ const App: React.FC = () => {
         </Stack>
       ) : (
         <Stack styles={gameContainerStyles}>
+          <Stack styles={userInfoStyles}>
+            <Text 
+              variant="large" 
+              styles={{ 
+                root: { 
+                  color: '#006064',
+                  fontWeight: 'semibold'
+                } 
+              }}
+            >
+              Welcome, {username}!
+            </Text>
+            <Stack horizontal tokens={{ childrenGap: 10 }}>
+              <DefaultButton 
+                text="Logout" 
+                onClick={handleLogout}
+                styles={{
+                  root: {
+                    fontSize: '14px',
+                    padding: '8px 16px',
+                    backgroundColor: '#e3f2fd',
+                    border: '2px solid #2196f3',
+                    color: '#1976d2'
+                  },
+                  rootHovered: {
+                    backgroundColor: '#2196f3',
+                    color: '#ffffff'
+                  }
+                }}
+              />
+              <DefaultButton 
+                text="Reset Progress" 
+                onClick={handleResetProgress}
+                styles={{
+                  root: {
+                    fontSize: '14px',
+                    padding: '8px 16px',
+                    backgroundColor: '#ffcdd2',
+                    border: '2px solid #ef5350',
+                    color: '#c62828'
+                  },
+                  rootHovered: {
+                    backgroundColor: '#ef5350',
+                    color: '#ffffff'
+                  }
+                }}
+              />
+            </Stack>
+          </Stack>
           <Text 
             variant="xLarge" 
             styles={{ 
