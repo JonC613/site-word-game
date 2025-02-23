@@ -66,57 +66,8 @@ const gameContainerStyles: IStackStyles = {
   }
 };
 
-const headerStyles: IStackStyles = {
-  root: {
-    backgroundColor: COLORS.secondary,
-    padding: '25px 50px',
-    borderRadius: '30px',
-    boxShadow: '0 8px 0 #F57C00',
-    border: '4px solid #F57C00',
-    transform: 'rotate(-2deg)',
-    margin: '20px 0 40px 0',
-    width: 'auto',
-    minWidth: '70%',
-    animation: 'float 3s ease-in-out infinite',
-    transition: 'transform 0.3s ease'
-  }
-};
 
-const headerTextStyles: ITextStyles = {
-  root: {
-    fontSize: '48px',
-    fontWeight: 'bold',
-    color: '#FFFFFF',
-    textAlign: 'center',
-    textShadow: '3px 3px 0 #F57C00',
-    letterSpacing: '1px',
-    transform: 'rotate(2deg)',
-    display: 'flex',
-    alignItems: 'center',
-    gap: '15px',
-    justifyContent: 'center'
-  }
-};
 
-const wordContainerStyles: IStackStyles = {
-  root: {
-    margin: '40px 0',
-    padding: '40px',
-    backgroundColor: COLORS.background.container,
-    borderRadius: '30px',
-    boxShadow: '0 15px 30px rgba(0, 0, 0, 0.1)',
-    width: '100%',
-    maxWidth: '800px',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    gap: '30px',
-    transition: 'transform 0.3s ease',
-    ':hover': {
-      transform: 'translateY(-5px)'
-    }
-  }
-};
 
 // Add a new style for the message container
 const messageContainerStyles: IStackStyles = {
