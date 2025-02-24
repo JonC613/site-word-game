@@ -1,10 +1,10 @@
 import React from 'react';
-import { Stack, Text, IStackStyles } from '@fluentui/react';
+import { Stack, IStackStyles } from '@fluentui/react';
 import Score from './Score';
 import WordDisplay from './WordDisplay';
 import Message from './Message';
 import Controls from './Controls';
-import UserInfo from './UserInfo';
+import HeaderContainer from './HeaderContainer';
 
 interface GameContainerProps {
   username: string;
@@ -40,26 +40,13 @@ const GameContainer: React.FC<GameContainerProps> = ({
 }) => {
   return (
     <Stack styles={gameContainerStyles}>
-      <UserInfo
+      <HeaderContainer
         username={username}
         handleToggleStats={handleToggleStats}
         handleLogout={handleLogout}
         handleResetProgress={handleResetProgress}
         buttonConfigs={buttonConfigs}
       />
-      <Text 
-        variant="xLarge" 
-        styles={{ 
-          root: { 
-            fontSize: '32px', 
-            fontWeight: 'bold',
-            color: '#006064',
-            textShadow: '2px 2px 0 #ffffff'
-          } 
-        }}
-      >
-        Sight Word Learning Game
-      </Text>
       <Score score={score} highScore={highScore} />
       <WordDisplay currentWord={currentWord} />
       <Message message={message} />
