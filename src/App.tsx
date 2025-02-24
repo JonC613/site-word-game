@@ -5,7 +5,6 @@ import StatsPage from './StatsPage';
 import { COLORS } from './styles/colors';
 import Header from './components/Header';
 import GameContainer from './components/GameContainer';
-import Message from './components/Message'; // Import the Message component
 import { IButtonStyles } from '@fluentui/react';
 
 const playWordAudio = (word: string) => {

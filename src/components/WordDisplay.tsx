@@ -27,6 +27,7 @@ const wordStyles = {
     cursor: 'pointer',
     transition: 'all 0.3s ease',
     userSelect: 'none',
+    width: '600px', // Increase the width
     ':hover': {
       transform: 'scale(1.05)',
       boxShadow: '0 12px 0 rgba(0, 121, 107, 0.2)'
