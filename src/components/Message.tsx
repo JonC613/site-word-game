@@ -7,6 +7,7 @@ interface MessageProps {
 }
 
 const Message: React.FC<MessageProps> = ({ message }) => {
+  console.log('Rendering Message component with message:', message); // Debug log
   return (
     <Text variant="medium" styles={messageStyles}>
       {message}
@@ -23,8 +24,8 @@ const messageStyles = {
     fontSize: '24px',
     fontWeight: '600',
     textAlign: 'center',
-    opacity: 0,
-    transform: 'translateY(20px)',
+    opacity: 1, // Ensure opacity is set to 1 to make the message visible
+    transform: 'translateY(0)', // Ensure transform is set to 0 to make the message visible
     animation: 'slideUp 0.3s ease forwards'
   }
 };

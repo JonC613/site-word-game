@@ -5,10 +5,12 @@ import StatsPage from './StatsPage';
 import { COLORS } from './styles/colors';
 import Header from './components/Header';
 import GameContainer from './components/GameContainer';
+import Message from './components/Message'; // Import the Message component
 import { IButtonStyles } from '@fluentui/react';
 
 const playWordAudio = (word: string) => {
   try {
+    console.log('Playing audio for word:', word); // Debug log
     const audio = new Audio(`/mp3/${word.toLowerCase()}.mp3`);
     audio.play();
   } catch (error) {
@@ -129,6 +131,7 @@ const App: React.FC = () => {
   const [incorrectWords, setIncorrectWords] = useState<number>(0);
 
   useEffect(() => {
+    console.log('Loading usernames from localStorage'); // Debug log
     const savedUsernames = localStorage.getItem('usernames');
     if (savedUsernames) {
       setUsernames(JSON.parse(savedUsernames));
@@ -137,6 +140,7 @@ const App: React.FC = () => {
 
   useEffect(() => {
     if (username) {
+      console.log('Loading user data for:', username); // Debug log
       const savedScore = localStorage.getItem(`${username}_score`);
       const savedHighScore = localStorage.getItem(`${username}_highScore`);
       const savedUsedWords = localStorage.getItem(`${username}_usedWords`);
@@ -156,6 +160,7 @@ const App: React.FC = () => {
 
   useEffect(() => {
     if (username) {
+      console.log('Saving user data for:', username); // Debug log
       localStorage.setItem(`${username}_score`, score.toString());
       localStorage.setItem(`${username}_highScore`, highScore.toString());
       localStorage.setItem(`${username}_usedWords`, JSON.stringify(usedWords));
@@ -167,6 +172,7 @@ const App: React.FC = () => {
 
   useEffect(() => {
     if (message) {
+      console.log('Displaying message:', message); // Debug log
       const timer = setTimeout(() => {
         setMessage('');
       }, messageTimeout);
@@ -175,6 +181,7 @@ const App: React.FC = () => {
   }, [message, messageTimeout]);
 
   const handleCorrect = (): void => {
+    console.log('Handling correct answer'); // Debug log
     const newScore = score + 1;
     setScore(newScore);
     setHighScore(Math.max(highScore, newScore));
@@ -199,6 +206,7 @@ const App: React.FC = () => {
   };
 
   const handleIncorrect = (): void => {
+    console.log('Handling incorrect answer'); // Debug log
     const newScore = Math.max(0, score - 1);
     setScore(newScore);
     setMessage('Keep trying! -1 point');
@@ -210,11 +218,13 @@ const App: React.FC = () => {
   };
 
   const handleRepeat = (): void => {
+    console.log('Repeating word:', currentWord); // Debug log
     setMessage(`Let's say it again: ${currentWord}`);
     playWordAudio(currentWord);
   };
 
   const handleLogin = () => {
+    console.log('Logging in with username:', inputUsername); // Debug log
     if (inputUsername && !usernames.includes(inputUsername)) {
       const newUsernames = [...usernames, inputUsername];
       setUsernames(newUsernames);
@@ -224,10 +234,12 @@ const App: React.FC = () => {
   };
 
   const handleUsernameClick = (username: string) => {
+    console.log('Selecting username:', username); // Debug log
     setUsername(username);
   };
 
   const handleResetProgress = () => {
+    console.log('Resetting progress for user:', username); // Debug log
     setScore(0);
     setHighScore(0);
     setUsedWords([]);
@@ -240,11 +252,13 @@ const App: React.FC = () => {
   };
 
   const handleLogout = () => {
+    console.log('Logging out'); // Debug log
     setUsername('');
     setInputUsername('');
   };
 
   const handleToggleStats = () => {
+    console.log('Toggling stats view'); // Debug log
     setShowStats(prev => !prev);
   };
 
@@ -272,29 +286,32 @@ const App: React.FC = () => {
           onBack={handleToggleStats}
         />
       ) : (
-        <GameContainer
-          username={username}
-          score={score}
-          highScore={highScore}
-          currentWord={currentWord}
-          message={message}
-          handleCorrect={handleCorrect}
-          handleIncorrect={handleIncorrect}
-          handleRepeat={handleRepeat}
-          handleToggleStats={handleToggleStats}
-          handleLogout={handleLogout}
-          handleResetProgress={handleResetProgress}
-          showStats={showStats}
-          correctWords={correctWords}
-          incorrectWords={incorrectWords}
-          buttonConfigs={buttonConfigs}
-        />
+        <>
+          <GameContainer
+            username={username}
+            score={score}
+            highScore={highScore}
+            currentWord={currentWord}
+            message={message}
+            handleCorrect={handleCorrect}
+            handleIncorrect={handleIncorrect}
+            handleRepeat={handleRepeat}
+            handleToggleStats={handleToggleStats}
+            handleLogout={handleLogout}
+            handleResetProgress={handleResetProgress}
+            showStats={showStats}
+            correctWords={correctWords}
+            incorrectWords={incorrectWords}
+            buttonConfigs={buttonConfigs}
+          />
+        </>
       )}
     </Stack>
   );
 };
 
 const getRandomWord = (usedWords: string[], currentWord: string): string => {
+  console.log('Getting random word'); // Debug log
   const availableWords = words.filter(word => !usedWords.includes(word) && word !== currentWord);
   if (availableWords.length === 0) {
     const newWord = words.filter(word => word !== currentWord)[0] || words[0];

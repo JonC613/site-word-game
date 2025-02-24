@@ -36,8 +36,17 @@ const GameContainer: React.FC<GameContainerProps> = ({
   handleToggleStats,
   handleLogout,
   handleResetProgress,
-  buttonConfigs
+  buttonConfigs,
+  showStats
 }) => {
+  console.log('Rendering GameContainer with props:', {
+    username,
+    score,
+    highScore,
+    currentWord,
+    message,
+    showStats
+  }); // Debug log
   return (
     <Stack styles={gameContainerStyles}>
       <HeaderContainer
