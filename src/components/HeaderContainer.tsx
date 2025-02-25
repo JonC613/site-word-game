@@ -1,7 +1,6 @@
 import React from 'react';
 import { Stack } from '@fluentui/react';
 import UserInfo from './UserInfo';
-import GameTitle from './GameTitle';
 
 interface HeaderContainerProps {
   username: string;
