@@ -20,7 +20,6 @@ const HeaderContainer: React.FC<HeaderContainerProps> = ({
 }) => {
   return (
     <Stack horizontal horizontalAlign="space-between" styles={headerContainerStyles}>
-      <GameTitle />
       <UserInfo
         username={username}
         handleToggleStats={handleToggleStats}
